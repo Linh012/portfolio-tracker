@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body>
+  <div class="container">
+    <br />
+    <h1>{{statuscode}} Error</h1>
+    <br />
+    <h2>
+      {% if statuscode == "404" %}
+      The requested URL {{url}} was not found on this server.
+      {% elif statuscode == "500" %}
+      Internal Server Error! The server is currently unable to handle this request.
+      {% endif %}
+    </h2>
+    <a class="btn btn-secondary" role="button" href="{{url_for("index")}}">Return to Index</a>
+  </div>
+</body>
+{% endblock %}

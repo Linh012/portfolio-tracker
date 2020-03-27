@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign In</h1>
+<div class="content" style="width:25%">
+  {% for error in form.email.errors %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endfor %}
+  <form action="/login/" method="POST">
+    <div class="form-group">
+      {{ form.hidden_tag() }}
+      {{ form.email(class="form-control", placeholder="Email") }}
+      {{ form.password(class="form-control", placeholder="Password") }}
+    </div>
+    <div class="form-group form-check">
+      {{ form.remember_me() }} {{ form.remember_me.label }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    <a class="btn btn-secondary" role="button" href="{{url_for("register")}}">Sign Up?</a>
+  </form>
+</div>
+{% endblock %}
