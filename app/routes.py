@@ -5,7 +5,8 @@ from app.models import * #bad practice
 from werkzeug.security import generate_password_hash, check_password_hash #sha256
 import yfinance as yf  # YAHOO! FINANCE
 import pandas as pd  # for data manipulation and analysis - data frame = 2 dimensional data structure
-from bokeh.plotting import figure, output_file, show #graphing
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import HoverTool #graphing
 import datetime #date (format)
 
 # Returns User object (instance of User) from db
@@ -82,7 +83,7 @@ def research():
     print(tickerDf['Close'])
     y = tickerDf['Close']
     x = tickerDf.index
-    tickerDf.reset_index(inplace=True, drop=False)
+    #tickerDf.reset_index(inplace=True, drop=False)
     # output to static HTML file
     output_file("lines.html")
 
@@ -92,9 +93,13 @@ def research():
 
     # add a line renderer with legend and line thickness
     p.line(x, y, legend="Temp.", line_width=2)
+    hover = HoverTool()
+    hover.tooltips = "<div style=padding=5px>Price:@y</div>"
+
+    p.add_tools(hover)
 
     # show the results
-    #show(p)
+    show(p)
     # print(tickerData.calendar)
     # print(tickerData.info)
     # print(tickerData.recommendations)
