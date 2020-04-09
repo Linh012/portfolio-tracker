@@ -5,7 +5,8 @@ from app.models import * #bad practice
 from werkzeug.security import generate_password_hash, check_password_hash #sha256
 import yfinance as yf  # YAHOO! FINANCE
 import pandas as pd  # for data manipulation and analysis - data frame = 2 dimensional data structure
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure
+from bokeh.embed import components
 from bokeh.models import HoverTool #graphing
 import datetime #date (format)
 
@@ -74,7 +75,7 @@ def register():
 def dashboard():
     return render_template("dashboard.html", title="Dashboard")
 
-
+#https://www.twitch.tv/healthygamer_gg/clip/TransparentInspiringHabaneroANELE
 @app.route('/research/', methods=['GET'])
 def research():
     tickerSymbol = 'ETH-USD'
@@ -84,30 +85,26 @@ def research():
     y = tickerDf['Close']
     x = tickerDf.index
     #tickerDf.reset_index(inplace=True, drop=False)
-    # output to static HTML file
-    output_file("lines.html")
+    tools = "pan,box_zoom,wheel_zoom,save,reset"
 
     # create a new plot with a title and axis labels
-    p = figure(title="simple line example", x_axis_type="datetime",
-               x_axis_label='x', y_axis_label='y')
+    p = figure(tools=tools,title="Price Chart", x_axis_type="datetime",
+               x_axis_label='Datetime', y_axis_label='Price')
 
     # add a line renderer with legend and line thickness
     p.line(x, y, legend="Temp.", line_width=2)
     hover = HoverTool()
     hover.tooltips = "<div style=padding=5px>Price:@y</div>"
-
     p.add_tools(hover)
 
-    # show the results
-    show(p)
-    # print(tickerData.calendar)
-    # print(tickerData.info)
-    # print(tickerData.recommendations)
-    # print(tickerData.actions)
-    # print(tickerData.dividends)
-    # prepare some data
+    script,div = components(p)
+    calendar = tickerData.calendar
+    info = tickerData.info
+    recommendations = tickerData.recommendations
+    actions = tickerData.actions
+    dividends = tickerData.dividends
 
-    return render_template("research.html", title="Research")
+    return render_template("research.html", title="Research", script = script, div = div, info = info)
 
 
 @app.route('/logout/')  # logout
