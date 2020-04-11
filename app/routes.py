@@ -1,13 +1,11 @@
 from app import app
 from flask import render_template, redirect, flash, url_for, request #flask
-from app.forms import LoginForm, SignupForm #keep this updated
+from app.forms import LoginForm, SignupForm, TickerForm #keep this updated
 from app.models import * #bad practice
+from app.charts import *
 from werkzeug.security import generate_password_hash, check_password_hash #sha256
 import yfinance as yf  # YAHOO! FINANCE
 import pandas as pd  # for data manipulation and analysis - data frame = 2 dimensional data structure
-from bokeh.plotting import figure
-from bokeh.embed import components
-from bokeh.models import HoverTool #graphing
 import datetime #date (format)
 
 # Returns User object (instance of User) from db
@@ -75,36 +73,27 @@ def register():
 def dashboard():
     return render_template("dashboard.html", title="Dashboard")
 
-#https://www.twitch.tv/healthygamer_gg/clip/TransparentInspiringHabaneroANELE
-@app.route('/research/', methods=['GET'])
+
+@app.route('/research/', methods=['GET', 'POST'])
 def research():
-    tickerSymbol = 'ETH-USD'
-    tickerData = yf.Ticker(tickerSymbol)
-    tickerDf = tickerData.history(period='max')  # data frame
-    print(tickerDf['Close'])
-    y = tickerDf['Close']
-    x = tickerDf.index
-    #tickerDf.reset_index(inplace=True, drop=False)
-    tools = "pan,box_zoom,wheel_zoom,save,reset"
+    t = TickerForm()
+    script,div,calendar,info = "No data", "", "", ""
 
-    # create a new plot with a title and axis labels
-    p = figure(tools=tools,title="Price Chart", x_axis_type="datetime",
-               x_axis_label='Datetime', y_axis_label='Price')
+    if t.symbol.data:
+        tickerSymbol = t.symbol.data
+        tickerData = yf.Ticker(tickerSymbol)
+        tickerDf = tickerData.history(period='max')  # data frame
+        y = tickerDf['Close']
+        x = tickerDf.index
+        #tickerDf.reset_index(inplace=True, drop=False)
+        script,div = components(create_pchart(x,y))
+        calendar = tickerData.calendar
+        info = tickerData.info
+        recommendations = tickerData.recommendations
+        actions = tickerData.actions
+        dividends = tickerData.dividends
 
-    # add a line renderer with legend and line thickness
-    p.line(x, y, legend="Temp.", line_width=2)
-    hover = HoverTool()
-    hover.tooltips = "<div style=padding=5px>Price:@y</div>"
-    p.add_tools(hover)
-
-    script,div = components(p)
-    calendar = tickerData.calendar
-    info = tickerData.info
-    recommendations = tickerData.recommendations
-    actions = tickerData.actions
-    dividends = tickerData.dividends
-
-    return render_template("research.html", title="Research", script = script, div = div, info = info)
+    return render_template("research.html", title="Research",form = t, script = script, div = div, info = info)
 
 
 @app.route('/logout/')  # logout
