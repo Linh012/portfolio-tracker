@@ -12,16 +12,17 @@
     </div>
   </form>
 </div>
-
+<br />
 <div>
-
   {{ div | safe }}
   {{ script | safe }}
-
 </div>
-
-<p>
-  {{ info }}
-</p>
+<br />
+<div align="left" style="width:75%">
+  <h2>Yahoo Finance Info: {{ symbol }}</h2>
+  {% for x in info %}
+  <b>{{ x }} :</b> {{ info[x] }} <br />
+  {% endfor %}
+</div>
 
 {% endblock %}

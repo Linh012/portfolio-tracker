@@ -77,8 +77,7 @@ def dashboard():
 @app.route('/research/', methods=['GET', 'POST'])
 def research():
     t = TickerForm()
-    script,div,calendar,info = "No data", "", "", ""
-
+    script,div,info,tickerSymbol = "No chart data", "", "No data","None"
     if t.symbol.data:
         tickerSymbol = t.symbol.data
         tickerData = yf.Ticker(tickerSymbol)
@@ -87,13 +86,8 @@ def research():
         x = tickerDf.index
         #tickerDf.reset_index(inplace=True, drop=False)
         script,div = components(create_pchart(x,y))
-        calendar = tickerData.calendar
         info = tickerData.info
-        recommendations = tickerData.recommendations
-        actions = tickerData.actions
-        dividends = tickerData.dividends
-
-    return render_template("research.html", title="Research",form = t, script = script, div = div, info = info)
+    return render_template("research.html", title="Research",form = t, script = script, div = div, info = info, symbol = tickerSymbol)
 
 
 @app.route('/logout/')  # logout
