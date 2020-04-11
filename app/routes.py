@@ -77,16 +77,20 @@ def dashboard():
 @app.route('/research/', methods=['GET', 'POST'])
 def research():
     t = TickerForm()
-    script,div,info,tickerSymbol = "No chart data", "", "No data","None"
+    script,div,info,tickerSymbol = "No chart data", "", "","None"
     if t.symbol.data:
-        tickerSymbol = t.symbol.data
-        tickerData = yf.Ticker(tickerSymbol)
-        tickerDf = tickerData.history(period='max')  # data frame
-        y = tickerDf['Close']
-        x = tickerDf.index
-        #tickerDf.reset_index(inplace=True, drop=False)
-        script,div = components(create_pchart(x,y))
-        info = tickerData.info
+        try:
+            tickerSymbol = t.symbol.data
+            tickerData = yf.Ticker(tickerSymbol)
+            tickerDf = tickerData.history(period='max')  # data frame
+            print(tickerDf)
+            y = tickerDf['Close']
+            x = tickerDf.index
+            #tickerDf.reset_index(inplace=True, drop=False)
+            script,div = components(create_pchart(x,y))
+            info = tickerData.info
+        except:
+            flash("No data found! Symbol may have been delisted!")
     return render_template("research.html", title="Research",form = t, script = script, div = div, info = info, symbol = tickerSymbol)
 
 
