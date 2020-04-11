@@ -3,24 +3,25 @@
 
 {% block content %}
 <h1>Research</h1>
-<div class="content" style="width:50%">
-  <form class="form-inline">
+<div class="content" style="width:25%">
+
+  <form class="form-inline" action="/research/" method="POST">
     <div class="form-group">
-      <label for="exampleInputEmail1">Enter Ticker Symbol :</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+      {{ form.symbol(class="form-control", placeholder="Ticker Symbol") }}
+      <button type="submit" class="btn btn-primary">Go</button>
     </div>
-    <button type="submit" class="btn btn-primary">Go</button>
   </form>
 </div>
 
-    <div>
+<div>
 
-        {{ div | safe }}
-        {{ script | safe }}
+  {{ div | safe }}
+  {{ script | safe }}
 
-    </div>
+</div>
 
 <p>
- {{ info }}
+  {{ info }}
 </p>
+
 {% endblock %}
