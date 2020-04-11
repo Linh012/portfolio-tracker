@@ -17,3 +17,7 @@ class SignupForm(FlaskForm):
                         DataRequired(), Length(max=120), Email(message=('Invalid Email Address.'))])
     password = PasswordField('Password', validators=[DataRequired(
         message=('Please enter a password.')), Length(max=80)])
+
+class TickerForm(FlaskForm):
+    symbol = StringField('Ticker Symbol', validators=[
+                        DataRequired(), Length(max=10)])
