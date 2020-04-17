@@ -1,17 +1,13 @@
-from flask import Flask  # external libraries/other imports
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import UserMixin, LoginManager, login_required, login_user, current_user, logout_user
+from flask import Flask  #external libraries/other imports
+from flask_sqlalchemy import SQLAlchemy #Object-relational mapper (ORM)
+from flask_login import UserMixin, LoginManager, login_required, login_user, current_user, logout_user #User/login sessions
 from config import *
 
 # Initialization/Instantiation of extensions/...
 # creates an instance of Flask class
 app = Flask(__name__, template_folder="templates", static_folder="static")
-Bootstrap(app)  # bootstrap css
-app.config.from_object('config.DevelopmentConfig')  # configuration
+app.config.from_object('config.DevelopmentConfig')  #environment (development/production/...)
 db = SQLAlchemy(app)  # Database
-migrate = Migrate(app, db)  # Database migrations using Alembic
 
 # User session management
 login_manager = LoginManager()
