@@ -1,5 +1,5 @@
 from app import *
-import datetime #classes for manipulating dates and times
+from datetime import date #classes for manipulating dates
 
 
 # inherits from Model class (base class for all models in Flask SQLAlchemy)
@@ -36,8 +36,8 @@ class User(UserMixin, db.Model):
 class Investment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String(10), nullable=False)
-    date_start = db.Column(db.DateTime, nullable=False)
-    date_end = db.Column(db.DateTime, nullable=True)
+    date_start = db.Column(db.Date, nullable=False)
+    date_end = db.Column(db.Date, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
 
     def __init__(self, symbol, date_start, date_end):
