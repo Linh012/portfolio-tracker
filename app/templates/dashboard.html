@@ -1,1 +1,68 @@
 {% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<h3>Charts</h3>
+<div>
+</div>
+
+<h3>Investments</h3>
+<div align="left" style="width:75%">
+<h5>Add</h5>
+  <form class="form-inline" action="/dashboard/" method="POST">
+    <div class="form-group">
+      {{ form.hidden_tag() }}
+      {{ form.symbol(class="form-control", placeholder="Ticker Symbol") }}
+      {{ form.amount(class="form-control", placeholder="Amount") }}
+      {{ form.date_start(class="form-control", placeholder="Start Date")}}
+
+      <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+  </form>
+  <br />
+<h5>Delete</h5>
+  <form class="form-inline" action="/dashboard/" method="POST">
+    <div class="form-group">
+      {{ form.hidden_tag() }}
+      {{ form2.id(class="form-control", placeholder="ID") }}
+      <button type="submit" class="btn btn-primary">Delete</button>
+    </div>
+  </form>
+  <br />
+<h5>Edit end date</h5>
+<form class="form-inline" action="/dashboard/" method="POST">
+  <div class="form-group">
+    {{ form.hidden_tag() }}
+    {{ form3.id(class="form-control", placeholder="ID") }}
+    {{ form3.date_end(class="form-control", placeholder="End Date") }}
+    <button type="submit" class="btn btn-primary">Edit end date</button>
+  </div>
+</form>
+</div>
+
+<div>
+<br />
+<h3>Table of Investments</h3>
+<br />
+
+<table id="portfolio">
+  <tr>
+  <th>ID</th>
+  <th>Symbol</th>
+  <th>Amount</th>
+  <th>Start date</th>
+  <th>End date</th>
+  <th>Profit</th>
+  </tr>
+{% for x in inv %}
+<tr>
+   <td>{{x.id}}</td>
+   <td>{{x.symbol}}</td>
+   <td>{{x.amount}}</td>
+   <td>{{x.date_start}}</td>
+   <td>{{x.date_end}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+{% endblock %}
