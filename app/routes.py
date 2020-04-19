@@ -1,12 +1,11 @@
 from app import app
 from flask import render_template, redirect, flash, url_for, request #flask
-from app.forms import LoginForm, SignupForm, TickerForm #keep this updated
-from app.models import * #bad practice
+from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm #forms
+from app.models import * # * = bad practice
 from app.charts import *
 from werkzeug.security import generate_password_hash, check_password_hash #sha256
-import yfinance as yf  # YAHOO! FINANCE
-import pandas as pd  # for data manipulation and analysis - data frame = 2 dimensional data structure
-import datetime #date (format)
+import yfinance as yf  #for YAHOO! FINANCE web scraping
+import pandas as pd  #for data manipulation and analysis - data frame = 2 dimensional data structure
 
 # Returns User object (instance of User) from db
 @login_manager.user_loader
@@ -68,29 +67,60 @@ def register():
     return render_template("register.html", title="Registration Page", form=s)
 
 
-@app.route('/dashboard/')  # dashboard requires login
+@app.route('/dashboard/', methods=['GET', 'POST'])  # dashboard requires login
 @login_required  # decorater - redirect to login page if not logged in
 def dashboard():
-    return render_template("dashboard.html", title="Dashboard")
+    i,d,e = InvestmentForm(), DeleteForm(), EditForm()
+    inv = Investment.query.all()
+    if i.validate_on_submit():
+        if i.date_start.data <= date.today():
+            try:
+                isymbol = i.symbol.data
+                iamount = i.amount.data
+                tickerData = yf.Ticker(isymbol)
+                info = tickerData.info
+                idate_start = i.date_start.data
+                new_investment = Investment(symbol = isymbol, amount = iamount, date_start = idate_start, date_end = None)
+                current_user.portfolio.append(new_investment)
+                db.session.add(new_investment)
+                db.session.commit()
+                flash("New investment added!")
+            except:
+                flash("No data found, symbol may have been delisted!")
+        else:
+            flash("Must not be a future date!")
+    if d.validate_on_submit():
+        try:
+            inv_id = d.id.data
+            rem = Investment.query.filter_by(id=inv_id).first()
+            db.session.delete(rem)
+            db.session.commit()
+            flash("Investment deleted successfully!")
+            return redirect(url_for("dashboard"))
+        except:
+            flash("INVALID ID!")
+
+    if e.validate_on_submit():
+        pass
+    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv)
 
 
 @app.route('/research/', methods=['GET', 'POST'])
 def research():
     t = TickerForm()
     script,div,info,tickerSymbol = "No chart data", "", "","None"
-    if t.symbol.data:
+    if t.validate_on_submit():
         try:
             tickerSymbol = t.symbol.data
             tickerData = yf.Ticker(tickerSymbol)
             tickerDf = tickerData.history(period='max')  # data frame
-            print(tickerDf)
             y = tickerDf['Close']
             x = tickerDf.index
             #tickerDf.reset_index(inplace=True, drop=False)
             script,div = components(create_pchart(x,y))
             info = tickerData.info
         except:
-            flash("No data found! Symbol may have been delisted!")
+            flash("No data found, symbol may have been delisted!")
     return render_template("research.html", title="Research",form = t, script = script, div = div, info = info, symbol = tickerSymbol)
 
 
