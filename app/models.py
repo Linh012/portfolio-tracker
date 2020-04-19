@@ -36,12 +36,14 @@ class User(UserMixin, db.Model):
 class Investment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String(10), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
     date_start = db.Column(db.Date, nullable=False)
     date_end = db.Column(db.Date, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
 
-    def __init__(self, symbol, date_start, date_end):
+    def __init__(self, symbol, amount, date_start, date_end):
         self.symbol = symbol
+        self.amount = amount
         self.date_start = date_start
         self.date_end = date_end
 
