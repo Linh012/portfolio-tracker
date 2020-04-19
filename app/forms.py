@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, IntegerField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -21,3 +22,15 @@ class SignupForm(FlaskForm):
 class TickerForm(FlaskForm):
     symbol = StringField('Ticker Symbol', validators=[
                         DataRequired(), Length(max=10)])
+
+class InvestmentForm(FlaskForm):
+    symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=10)])
+    amount = FloatField('Amount', validators = [DataRequired()])
+    date_start = DateField('Start Date', format = '%Y-%m-%d', validators = [DataRequired()])
+
+class DeleteForm(FlaskForm):
+    id = IntegerField('inv_id', validators = [DataRequired()])
+
+class EditForm(FlaskForm):
+    id = IntegerField('ID', validators = [DataRequired()])
+    date_end = DateField('End Date', format = '%Y-%m-%d')
