@@ -71,7 +71,6 @@ def register():
 @login_required  # decorater - redirect to login page if not logged in
 def dashboard():
     i,d,e = InvestmentForm(), DeleteForm(), EditForm()
-    inv = Investment.query.all()
     if i.validate_on_submit():
         if i.date_start.data <= date.today():
             try:
@@ -91,18 +90,37 @@ def dashboard():
             flash("Must not be a future date!")
     if d.validate_on_submit():
         try:
-            inv_id = d.id.data
+            inv_id = d.d_id.data
             rem = Investment.query.filter_by(id=inv_id).first()
             db.session.delete(rem)
             db.session.commit()
             flash("Investment deleted successfully!")
-            return redirect(url_for("dashboard"))
         except:
             flash("INVALID ID!")
 
     if e.validate_on_submit():
-        pass
-    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv)
+        try:
+            chosen_id, dend = e.e_id.data, e.e_date_end.data
+            chem = Investment.query.filter_by(id=chosen_id).first()
+            chem.date_end = dend
+            print(dend)
+            flash("End date updated successfully!")
+        except:
+            flash("ERROR")
+    inv = Investment.query.all()
+    profit = []
+    for x in inv:
+        tickerSymbol = x.symbol
+        tickerData = yf.Ticker(tickerSymbol)
+        tickerDf = tickerData.history(start=x.date_start)
+        cprice = tickerDf['Close']
+        price1 = float(cprice[cprice.index[:1]])
+        price2 = float(cprice[cprice.index[-1:]])
+        percent = ((price2-price1)/price1)*100
+        profit.append(percent)
+
+
+    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv, profit=profit)
 
 
 @app.route('/research/', methods=['GET', 'POST'])
@@ -111,7 +129,7 @@ def research():
     script,div,info,tickerSymbol = "No chart data", "", "","None"
     if t.validate_on_submit():
         try:
-            tickerSymbol = t.symbol.data
+            tickerSymbol = t.t_symbol.data
             tickerData = yf.Ticker(tickerSymbol)
             tickerDf = tickerData.history(period='max')  # data frame
             y = tickerDf['Close']
