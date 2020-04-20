@@ -22,8 +22,8 @@
 <h5>Delete</h5>
   <form class="form-inline" action="/dashboard/" method="POST">
     <div class="form-group">
-      {{ form.hidden_tag() }}
-      {{ form2.id(class="form-control", placeholder="ID") }}
+      {{ form2.hidden_tag() }}
+      {{ form2.d_id(class="form-control", placeholder="ID") }}
       <button type="submit" class="btn btn-primary">Delete</button>
     </div>
   </form>
@@ -31,15 +31,15 @@
 <h5>Edit end date</h5>
 <form class="form-inline" action="/dashboard/" method="POST">
   <div class="form-group">
-    {{ form.hidden_tag() }}
-    {{ form3.id(class="form-control", placeholder="ID") }}
-    {{ form3.date_end(class="form-control", placeholder="End Date") }}
+    {{ form3.hidden_tag() }}
+    {{ form3.e_id(class="form-control", placeholder="ID") }}
+    {{ form3.e_date_end(class="form-control", placeholder="End Date") }}
     <button type="submit" class="btn btn-primary">Edit end date</button>
   </div>
 </form>
 </div>
 
-<div>
+<div style="width:85%">
 <br />
 <h3>Table of Investments</h3>
 <br />
@@ -48,18 +48,24 @@
   <tr>
   <th>ID</th>
   <th>Symbol</th>
-  <th>Amount</th>
+  <th>Initial Amount</th>
   <th>Start date</th>
   <th>End date</th>
+  <th>Profit (%)</th>
   <th>Profit</th>
+  <th>Net Amount</th>
   </tr>
 {% for x in inv %}
+{% set oloop = loop %}
 <tr>
-   <td>{{x.id}}</td>
-   <td>{{x.symbol}}</td>
-   <td>{{x.amount}}</td>
-   <td>{{x.date_start}}</td>
-   <td>{{x.date_end}}</td>
+   <td>{{ x.id }}</td>
+   <td>{{ x.symbol }}</td>
+   <td>{{ x.amount }}</td>
+   <td>{{ x.date_start }}</td>
+   <td>{{ x.date_end }}</td>
+   <td>{{ profit[oloop.index-1] }}</td>
+   <td>{{ (profit[oloop.index-1]/100)*x.amount}}</td>
+   <td>{{ (profit[oloop.index-1]/100+1)*x.amount }}</td>
 </tr>
 {% endfor %}
 </table>
