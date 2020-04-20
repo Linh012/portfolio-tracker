@@ -20,7 +20,7 @@ class SignupForm(FlaskForm):
         message=('Please enter a password.')), Length(max=80)])
 
 class TickerForm(FlaskForm):
-    symbol = StringField('Ticker Symbol', validators=[
+    t_symbol = StringField('Ticker Symbol', validators=[
                         DataRequired(), Length(max=10)])
 
 class InvestmentForm(FlaskForm):
@@ -29,8 +29,8 @@ class InvestmentForm(FlaskForm):
     date_start = DateField('Start Date', format = '%Y-%m-%d', validators = [DataRequired()])
 
 class DeleteForm(FlaskForm):
-    id = IntegerField('inv_id', validators = [DataRequired()])
+    d_id = IntegerField('inv_id', validators = [DataRequired()])
 
 class EditForm(FlaskForm):
-    id = IntegerField('ID', validators = [DataRequired()])
-    date_end = DateField('End Date', format = '%Y-%m-%d')
+    e_id = IntegerField('ID', validators = [DataRequired()])
+    e_date_end = DateField('End Date', format = '%Y-%m-%d')
