@@ -1,11 +1,10 @@
 from app import app
 from flask import render_template, redirect, flash, url_for, request #flask
 from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm #forms
-from app.models import * # * = bad practice
+from app.models import *
 from app.charts import *
 from werkzeug.security import generate_password_hash, check_password_hash #sha256
 import yfinance as yf  #for YAHOO! FINANCE web scraping
-import pandas as pd  #for data manipulation and analysis - data frame = 2 dimensional data structure
 
 # Returns User object (instance of User) from db
 @login_manager.user_loader
@@ -103,16 +102,20 @@ def dashboard():
             chosen_id, dend = e.e_id.data, e.e_date_end.data
             chem = Investment.query.filter_by(id=chosen_id).first()
             chem.date_end = dend
-            print(dend)
+            db.session.commit()
             flash("End date updated successfully!")
         except:
             flash("ERROR")
     inv = Investment.query.all()
+    scriptpie,divpie = components(create_piechart(inv))
     profit = []
     for x in inv:
         tickerSymbol = x.symbol
         tickerData = yf.Ticker(tickerSymbol)
-        tickerDf = tickerData.history(start=x.date_start)
+        if x.date_end != None:
+            tickerDf = tickerData.history(start=x.date_start, end=x.date_end)
+        else:
+            tickerDf = tickerData.history(start=x.date_start)
         cprice = tickerDf['Close']
         price1 = float(cprice[cprice.index[:1]])
         price2 = float(cprice[cprice.index[-1:]])
@@ -120,7 +123,7 @@ def dashboard():
         profit.append(percent)
 
 
-    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv, profit=profit)
+    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv, profit=profit, scriptpie=scriptpie, divpie=divpie)
 
 
 @app.route('/research/', methods=['GET', 'POST'])
@@ -135,7 +138,7 @@ def research():
             y = tickerDf['Close']
             x = tickerDf.index
             #tickerDf.reset_index(inplace=True, drop=False)
-            script,div = components(create_pchart(x,y))
+            script,div = components(create_pricechart(x,y))
             info = tickerData.info
         except:
             flash("No data found, symbol may have been delisted!")
