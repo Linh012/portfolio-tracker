@@ -1,5 +1,4 @@
 from app import *
-from datetime import date #classes for manipulating dates
 
 
 # inherits from Model class (base class for all models in Flask SQLAlchemy)
