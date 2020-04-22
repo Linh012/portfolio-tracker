@@ -26,11 +26,11 @@ class TickerForm(FlaskForm):
 class InvestmentForm(FlaskForm):
     symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=10)])
     amount = FloatField('Amount', validators = [DataRequired()])
-    date_start = DateField('Start Date', format = '%Y-%m-%d', validators = [DataRequired()])
+    date_start = DateField('YY-MM-DD', format = '%Y-%m-%d', validators = [DataRequired()])
 
 class DeleteForm(FlaskForm):
     d_id = IntegerField('inv_id', validators = [DataRequired()])
 
 class EditForm(FlaskForm):
     e_id = IntegerField('ID', validators = [DataRequired()])
-    e_date_end = DateField('End Date', format = '%Y-%m-%d')
+    e_date_end = DateField('YY-MM-DD', format = '%Y-%m-%d')
