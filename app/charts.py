@@ -9,6 +9,16 @@ from datetime import date #classes for manipulating dates
 
 tools = "pan,box_zoom,wheel_zoom,save,reset"
 
+def bubblesort_date(inv): #recursive bubble sorting
+    for x in range(len(inv)):
+        try:
+            if inv[x+1].date_start < inv[x].date_start:
+                inv[x], inv[x+1] = inv[x+1], inv[x]
+                bubblesort_date(inv)
+        except IndexError:
+            pass
+    return inv
+
 def create_pricechart(x,y):
         # create a new plot with a title and axis labels
     p = figure(tools=tools, title="Price Chart", x_axis_type="datetime",
@@ -46,3 +56,6 @@ def create_piechart(inv):
     p.axis.visible=False
     p.grid.grid_line_color = None
     return p
+
+def create_numberofinvestmentschart(inv):
+    pass
