@@ -1,2 +1,2 @@
 # portfoliotracker
-IB Computer Science HL IA
+IB M21 Computer Science HL IA
