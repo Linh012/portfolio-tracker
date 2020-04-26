@@ -122,14 +122,17 @@ def dashboard():
 
 
     lst = []
-    for a in inv:
+    for a in bubblesort_date(inv):
         if a.symbol not in lst:
             lst.append(a.symbol)
     data = yf.download(" ".join(lst), start=inv[0].date_start, end=date.today(),
                        group_by="ticker")
-    scriptnum, divnum = components(create_numberofinvestmentschart(inv,data))
+
+    scriptnum, divnum = components(create_numberofinvestmentschart(inv))
     scriptval, divval = components(create_portfoliovalue(inv,data))
-    return render_template("dashboard.html", title="Dashboard", form=i, form2=d, form3=e, inv=inv, profit=profit, scriptpie=scriptpie, divpie=divpie, scriptnum=scriptnum, divnum=divnum, scriptval=scriptval, divval=divval)
+    scriptbar, divbar = components(create_barchart(inv,data))
+
+    return render_template("dashboard.html", title="Dashboard", form=i, form2=d, form3=e, inv=inv, profit=profit, scriptpie=scriptpie, divpie=divpie, scriptnum=scriptnum, divnum=divnum, scriptval=scriptval, divval=divval,scriptbar  = scriptbar, divbar =divbar)
 
 
 @app.route('/research/', methods=['GET', 'POST'])

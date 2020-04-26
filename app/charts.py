@@ -74,14 +74,14 @@ def create_numberofinvestmentschart(inv):
         invdates.append(x.date_start)
     for _ in range(1, len(invdates) + 1):
         y.append(_)
-    p = figure(tools=tools, title="Number of Investments Chart", x_axis_type="datetime",
+    p = figure(tools=tools, title="Number of Investments Chart", plot_height=350, x_axis_type="datetime",
                x_axis_label='Datetime', y_axis_label='Number of investments')
     p.step(invdates, y, legend_label="Price", line_width=2)
 
     return p
 
 
-def create_portfoliovalue(inv,data):
+def create_portfoliovalue(inv, data):
     inv, lstdate, y = bubblesort_date(inv), [], [0] * 30
 
     for _ in range(30):
@@ -96,11 +96,34 @@ def create_portfoliovalue(inv,data):
                 change = ((newprice - originalprice) / originalprice) + 1
                 y[_] += x.amount * change
 
-    p = figure(tools=tools, title="30 Day Portfolio Value Chart", x_axis_type="datetime",
+    p = figure(tools=tools, title="30 Day Portfolio Value Chart", plot_height=350, x_axis_type="datetime",
                x_axis_label='Datetime', y_axis_label='Amount')
     # add a line renderer with legend and line thickness
     p.line(lstdate, y, legend_label="Value", line_width=2)
     return p
 
-    def create_barchart(inv,data):
-        pass
+
+def create_barchart(inv, data):
+    lstdate, performance = [], [0] * 7
+    for _ in range(7):
+        lstdate.append(data[inv[0].symbol].index[-7 + _])
+        for x in inv:
+            if x.date_start <= lstdate[_]:
+                tickerSymbol = x.symbol
+                cprice = data[tickerSymbol]['Close']
+                originalprice = float(cprice[cprice.index[0 + _]])
+                newprice = float(cprice[cprice.index[1 + _]])
+                percentchange = ((newprice - originalprice) /
+                                 originalprice) * 100
+                performance[_] += percentchange
+
+    psort = sorted(performance)
+    strdate = []
+    for d in lstdate:
+        strdate.append(d.strftime("%Y-%m-%d"))
+    p = figure(x_range=strdate, title="7 Day Performance (%change)", plot_height=350,
+               tools=tools)
+    p.vbar(x=strdate, top=performance, width=0.9)
+    p.xgrid.grid_line_color = None
+
+    return p
