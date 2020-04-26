@@ -1,10 +1,9 @@
 from app import app
-from flask import render_template, redirect, flash, url_for, request #flask
-from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm #forms
+from flask import render_template, redirect, flash, url_for, request  # flask
+from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm  # forms
 from app.models import *
 from app.charts import *
-from werkzeug.security import generate_password_hash, check_password_hash #sha256
-import yfinance as yf  #for YAHOO! FINANCE web scraping
+from werkzeug.security import generate_password_hash, check_password_hash  # sha256
 
 # Returns User object (instance of User) from db
 @login_manager.user_loader
@@ -37,8 +36,6 @@ def login():
         else:
             flash('Email not found in database!')
 
-
-
     # render login page
     return render_template("login.html", title="Login Page", form=f)
 
@@ -69,7 +66,7 @@ def register():
 @app.route('/dashboard/', methods=['GET', 'POST'])  # dashboard requires login
 @login_required  # decorater - redirect to login page if not logged in
 def dashboard():
-    i,d,e = InvestmentForm(), DeleteForm(), EditForm()
+    i, d, e = InvestmentForm(), DeleteForm(), EditForm()
     if i.validate_on_submit():
         if i.date_start.data <= date.today():
             try:
@@ -78,7 +75,8 @@ def dashboard():
                 tickerData = yf.Ticker(isymbol)
                 info = tickerData.info
                 idate_start = i.date_start.data
-                new_investment = Investment(symbol = isymbol, amount = iamount, date_start = idate_start, date_end = None)
+                new_investment = Investment(
+                    symbol=isymbol, amount=iamount, date_start=idate_start, date_end=None)
                 current_user.portfolio.append(new_investment)
                 db.session.add(new_investment)
                 db.session.commit()
@@ -106,8 +104,8 @@ def dashboard():
             flash("End date updated successfully!")
         except:
             flash("ERROR")
-    inv = Investment.query.all()
-    scriptpie,divpie = components(create_piechart(inv))
+    inv = Investment.query.filter_by(user_id=current_user.id).all()
+    scriptpie, divpie = components(create_piechart(inv))
     profit = []
     for x in inv:
         tickerSymbol = x.symbol
@@ -117,19 +115,27 @@ def dashboard():
         else:
             tickerDf = tickerData.history(start=x.date_start)
         cprice = tickerDf['Close']
-        price1 = float(cprice[cprice.index[:1]])
-        price2 = float(cprice[cprice.index[-1:]])
-        percent = ((price2-price1)/price1)*100
+        price1 = float(cprice[cprice.index[0]])
+        price2 = float(cprice[cprice.index[-1]])
+        percent = ((price2 - price1) / price1) * 100
         profit.append(percent)
 
 
-    return render_template("dashboard.html", title="Dashboard", form = i, form2 = d, form3 = e, inv = inv, profit=profit, scriptpie=scriptpie, divpie=divpie)
+    lst = []
+    for a in inv:
+        if a.symbol not in lst:
+            lst.append(a.symbol)
+    data = yf.download(" ".join(lst), start=inv[0].date_start, end=date.today(),
+                       group_by="ticker")
+    scriptnum, divnum = components(create_numberofinvestmentschart(inv,data))
+    scriptval, divval = components(create_portfoliovalue(inv,data))
+    return render_template("dashboard.html", title="Dashboard", form=i, form2=d, form3=e, inv=inv, profit=profit, scriptpie=scriptpie, divpie=divpie, scriptnum=scriptnum, divnum=divnum, scriptval=scriptval, divval=divval)
 
 
 @app.route('/research/', methods=['GET', 'POST'])
 def research():
     t = TickerForm()
-    script,div,info,tickerSymbol = "No chart data", "", "","None"
+    script, div, info, tickerSymbol = "No chart data", "", "", "None"
     if t.validate_on_submit():
         try:
             tickerSymbol = t.t_symbol.data
@@ -138,11 +144,11 @@ def research():
             y = tickerDf['Close']
             x = tickerDf.index
             #tickerDf.reset_index(inplace=True, drop=False)
-            script,div = components(create_pricechart(x,y))
+            script, div = components(create_pricechart(x, y))
             info = tickerData.info
         except:
             flash("No data found, symbol may have been delisted!")
-    return render_template("research.html", title="Research",form = t, script = script, div = div, info = info, symbol = tickerSymbol)
+    return render_template("research.html", title="Research", form=t, script=script, div=div, info=info, symbol=tickerSymbol)
 
 
 @app.route('/logout/')  # logout
