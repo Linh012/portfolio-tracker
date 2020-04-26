@@ -9,9 +9,13 @@
   padding: 8px;
 }
 
-#portfolio tr:nth-child(even){background-color: #f2f2f2;}
+#portfolio tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-#portfolio tr:hover {background-color: #ddd;}
+#portfolio tr:hover {
+  background-color: #ddd;
+}
 
 #portfolio th {
   padding-top: 12px;
