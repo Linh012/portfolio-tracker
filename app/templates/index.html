@@ -1,5 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div>
+  <h1>Portfolio Tracker</h1>
+  <h3>Makes monitoring your portfolio easier!</h3>
+</div>
 
+<div>
+  <h5>Store your portfolio online and access it anywhere from any device!</h5>
+  <h5>Automatically keep tracks of your portfolio performance through your dashboard.</h5>
+  <h5>Add, edit or delete investments in your portfolio through your personal dashboard.</h5>
+  <h5>Table of Investments and auto generated charts are found in your dashboard</h5>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Already Registered?</h5>
+        <p class="card-text">Click the button below and login!</p>
+        <a class="btn btn-primary" role="button" href="{{url_for("login")}}">Login</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Not Registered?</h5>
+        <p class="card-text">Go register for free now!</p>
+        <a class="btn btn-dark" role="button" href="{{url_for("register")}}">Register Now</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
