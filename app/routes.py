@@ -187,3 +187,14 @@ def page_not_found_error(error): # Render error page
 @app.errorhandler(500)  # 500 error handling
 def internal_server_error(error): # Render error page
     return render_template("error.html", url=request.path, statuscode='500')
+
+# About page
+@app.route('/about/')
+def about():
+    return render_template("about.html", title="About")
+
+# Settings page
+@app.route('/settings/')
+@login_required # Requires to be logged in
+def settings():
+    return render_template("settings.html", title="Settings")
