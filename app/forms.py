@@ -37,3 +37,12 @@ class DeleteForm(FlaskForm): #Delete investment from database, inherits from Fla
 class EditForm(FlaskForm): #Edit date_end of an investment in database
     e_id = IntegerField('ID', validators = [DataRequired()]) #Integer field, id of investment
     e_date_end = DateField('YY-MM-DD', format = '%Y-%m-%d') #Date field
+
+#Settings page fields
+class ChangePasswordForm(FlaskForm):
+    cpassword = PasswordField('Password', validators=[DataRequired(
+        message=('Please enter a password.')), Length(max=80)]) #Passworld field, max length 80 characters
+
+class ChangeEmailForm(FlaskForm):
+    cemail = StringField('Email', validators=[
+                        DataRequired(), Length(max=255), Email(message=('Invalid Email Address.'))]) #Email field, max length 255 characters
