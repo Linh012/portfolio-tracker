@@ -2,4 +2,44 @@
 
 {% block content %}
 <h1>Settings</h1>
+
+<br />
+
+<h3>Change Password</h3>
+
+<br />
+
+<form class="form-inline" action="/settings/" method="POST">
+  <h5>Current email:</h5>
+  <div class="form-group mb-2">
+    <label for="currentemailstatic" class="sr-only">Email</label>
+    <input type="text" readonly class="form-control-plaintext" id="currentemailstatic" value="{{email}}">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    {{ pform.hidden_tag() }}
+    {{ pform.cpassword(class="form-control", placeholder="New Password") }}
+  </div>
+
+  <button type="submit" class="btn btn-primary mb-2">Change Password</button>
+</form>
+
+<br />
+
+<h3>Change Email</h3>
+
+<br />
+
+<form class="form-inline" action="/settings/" method="POST">
+  <div class="form-group mb-2">
+    <label for="currentemailstatic2" class="sr-only">Email</label>
+    <input type="text" readonly class="form-control-plaintext" id="currentemailstatic2" value="{{email}}">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    {{ eform.hidden_tag() }}
+    {{ eform.cemail(class="form-control", placeholder="New Email") }}
+  </div>
+
+  <button type="submit" class="btn btn-primary mb-2">Change Email</button>
+</form>
+
 {% endblock %}
