@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, redirect, flash, url_for, request  # flask extensions
 # import form classes
-from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm
+from app.forms import LoginForm, SignupForm, TickerForm, InvestmentForm, DeleteForm, EditForm, ChangeEmailForm, ChangePasswordForm
 from app.models import *
 from app.charts import *
 # password hashing (sha256)
@@ -194,7 +194,26 @@ def about():
     return render_template("about.html", title="About")
 
 # Settings page
-@app.route('/settings/')
+@app.route('/settings/', methods=['GET', 'POST'])
 @login_required # Requires to be logged in
 def settings():
-    return render_template("settings.html", title="Settings")
+    pform, eform = ChangePasswordForm(), ChangeEmailForm()
+    cid = current_user.get_id()
+    existing_user = User.query.filter_by(
+                id=cid).first()  # Query database for user
+    if eform.validate_on_submit():
+        try:
+            existing_user.email = eform.cemail.data
+            db.session.commit() #Set new email and commit changes to database
+            flash("Email changed successfully!") # Flash success message
+        except:
+            flash("Error")
+    if pform.validate_on_submit():
+        try:
+            existing_user.passwordhashed = generate_password_hash(
+                pform.cpassword.data, method='sha256')
+            db.session.commit() #Set new email and commit changes to database
+            flash("Password changed successfully!") # Flash success message
+        except:
+            flash("Error")
+    return render_template("settings.html", title="Settings", email=existing_user.email, pform = pform, eform = eform)
