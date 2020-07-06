@@ -1,25 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>FAQ</h1>
 <div class="card-group">
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+      <h5 class="card-title">How do I get started?</h5>
+      <p class="card-text">Simply register <a href="{{url_for("register")}}">here</a> for free and login!</p>
     </div>
 
   </div>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+      <h5 class="card-title">How do I change my password/email if they are compromised?</h5>
+      <p class="card-text">Go to the <a href="{{url_for("settings")}}">settings tab</a> and change it there!</p>
     </div>
 
   </div>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+      <h5 class="card-title">Where do we get our data for our calculations?</h5>
+      <p class="card-text"><a href="https://finance.yahoo.com/">Yahoo! Finance</a>.</p>
     </div>
 
   </div>
@@ -30,22 +31,22 @@
 <div class="card-group">
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+      <h5 class="card-title">What is used to generate the charts?</h5>
+      <p class="card-text"><a href="https://bokeh.org/">Bokeh</a>.</p>
     </div>
 
   </div>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+      <h5 class="card-title">What languages were used to develop this web application?</h5>
+      <img src="../static/languages.png" alt="Languages">
     </div>
 
   </div>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+      <h5 class="card-title">Source code?</h5>
+      <p class="card-text">Github <a href="https://github.com/Linh012/portfoliotracker">here</a>.</p>
     </div>
 
   </div>
