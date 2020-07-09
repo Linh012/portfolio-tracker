@@ -132,7 +132,7 @@ def dashboard():
         profit.append(percent) # Add to percent list
 
     lst = [] #List of unique ticker symbols
-    for a in bubblesort_date(inv):
+    for a in bubblesort_date(inv, len(inv)):
         if a.symbol not in lst: # If ticker symbol is unique, append to list
             lst.append(a.symbol)
 
