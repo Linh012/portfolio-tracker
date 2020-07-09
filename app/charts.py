@@ -10,25 +10,25 @@ from datetime import date  # For manipulating date object
 import yfinance as yf  # For YAHOO! FINANCE web scraping
 
 # Tools for charts and allows user to save chart as image
-tools = "pan,box_zoom,wheel_zoom,save,reset"
+TOOLS = "pan,box_zoom,wheel_zoom,save,reset"
 
 
-def bubblesort_date(inv):  # Recursive bubble sorting
-    for x in range(len(inv)): # Traverse the list
-        try: # Swap elements if one is bigger than other
-            if inv[x + 1].date_start < inv[x].date_start:
-                inv[x], inv[x + 1] = inv[x + 1], inv[x]
-                bubblesort_date(inv)
-
-# Break loop when it tries to compare the last element with a non existing element outside of list bounds
-        except IndexError:
-            pass
+def bubblesort_date(inv, j):  # Recursive bubble sorting
+    if j == 1:
+        print(inv)
+        return
+    else:
+        for i in range(j-1): # Traverse the list
+            # Swap elements if one is bigger than other
+            if inv[i + 1].date_start < inv[i].date_start:
+                inv[i], inv[i + 1] = inv[i + 1], inv[i]
+    bubblesort_date(inv,j-1)
     return inv
 
 # Create price chart of ticker symbol
 def create_pricechart(x, y):
     # Add plot, axis, tools and labels
-    p = figure(tools=tools, title="Price Chart", x_axis_type="datetime",
+    p = figure(tools=TOOLS, title="Price Chart", x_axis_type="datetime",
                x_axis_label='Datetime', y_axis_label='Price')
 
     # Add a line with legend and line thickness of 2
@@ -66,7 +66,7 @@ def create_piechart(inv):
 
     # Add plot, title, tools, hover feature and x range
     p = figure(plot_height=350, title="Portfolio Diversity",
-               tools=tools + ",hover", tooltips="@investment: @value", x_range=(-0.5, 1.0))
+               tools=TOOLS + ",hover", tooltips="@investment: @value", x_range=(-0.5, 1.0))
 
     # Add sectors
     p.wedge(x=0, y=1, radius=0.4,
@@ -80,13 +80,13 @@ def create_piechart(inv):
 
 # Create number of investments chart
 def create_numberofinvestmentschart(inv):
-    inv, invdates, y = bubblesort_date(inv), [], []
+    inv, invdates, y = bubblesort_date(inv, len(inv)), [], []
     for x in inv: #Add dates to x-axis
         invdates.append(x.date_start)
     for _ in range(1, len(invdates) + 1): #Add values to y-axis
         y.append(_)
     # Add plot, tools, title, labels and set x-axis data type
-    p = figure(tools=tools, title="Number of Investments Chart", plot_height=350, x_axis_type="datetime",
+    p = figure(tools=TOOLS, title="Number of Investments Chart", plot_height=350, x_axis_type="datetime",
                x_axis_label='Datetime', y_axis_label='Number of investments')
     # Add step line with thickness 2
     p.step(invdates, y, legend_label="Price", line_width=2)
@@ -95,7 +95,7 @@ def create_numberofinvestmentschart(inv):
 
 # Create 30 day porfolio value chart
 def create_portfoliovalue(inv, data):
-    inv, lstdate, y = bubblesort_date(inv), [], [0] * 30
+    inv, lstdate, y = bubblesort_date(inv, len(inv)), [], [0] * 30
 
     for _ in range(30): # Loop 30 times for 30 days
         lstdate.append(data[inv[0].symbol].index[-30 + _]) # Add date to list of dates
@@ -113,7 +113,7 @@ def create_portfoliovalue(inv, data):
                 y[_] += x.amount * change
 
     # Add plot, tools, title, labels and set x-axis data type
-    p = figure(tools=tools, title="30 Day Portfolio Value Chart", plot_height=350, x_axis_type="datetime",
+    p = figure(tools=TOOLS, title="30 Day Portfolio Value Chart", plot_height=350, x_axis_type="datetime",
                x_axis_label='Datetime', y_axis_label='Amount')
     # Add a line renderer with legend label and line thickness 2
     p.line(lstdate, y, legend_label="Value", line_width=2)
@@ -154,7 +154,7 @@ def create_barchart(inv, data):
 
     # Add plot, x-axis, title, tools and plot height
     p = figure(x_range=strdate, title="7 Day Performance (%change)", plot_height=350,
-               tools=tools)
+               tools=TOOLS)
     # Add vertical bars
     p.vbar(x=strdate, top=performance, width=0.8)
     p.xgrid.grid_line_color = None #Hide x-axis grid lines
