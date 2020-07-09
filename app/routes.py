@@ -203,17 +203,23 @@ def settings():
                 id=cid).first()  # Query database for user
     if eform.validate_on_submit():
         try:
-            existing_user.email = eform.cemail.data
-            db.session.commit() #Set new email and commit changes to database
-            flash("Email changed successfully!") # Flash success message
+            if existing_user.email == eform.cemail.data:
+                flash("New email must be different from the old email.")
+            else:
+                existing_user.email = eform.cemail.data
+                db.session.commit() #Set new email and commit changes to database
+                flash("Email changed successfully!") # Flash success message
         except:
             flash("Error")
     if pform.validate_on_submit():
         try:
-            existing_user.passwordhashed = generate_password_hash(
-                pform.cpassword.data, method='sha256')
-            db.session.commit() #Set new email and commit changes to database
-            flash("Password changed successfully!") # Flash success message
+            if check_password_hash(existing_user.passwordhashed, pform.cpassword.data):
+                flash("New password must be different from the old password.")
+            else:        
+                existing_user.passwordhashed = generate_password_hash(
+                    pform.cpassword.data, method='sha256')
+                db.session.commit() #Set new email and commit changes to database
+                flash("Password changed successfully!") # Flash success message
         except:
             flash("Error")
     return render_template("settings.html", title="Settings", email=existing_user.email, pform = pform, eform = eform)
