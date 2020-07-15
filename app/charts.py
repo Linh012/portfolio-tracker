@@ -15,7 +15,6 @@ TOOLS = "pan,box_zoom,wheel_zoom,save,reset"
 
 def bubblesort_date(inv, j):  # Recursive bubble sorting
     if j == 1:
-        print(inv)
         return
     else:
         for i in range(j-1): # Traverse the list
