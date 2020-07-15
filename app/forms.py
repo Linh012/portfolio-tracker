@@ -27,7 +27,7 @@ class TickerForm(FlaskForm): #Research page fields, inherits from FlaskForm
 
 #Dashboard page fields
 class InvestmentForm(FlaskForm): #Add investment to database. inherits from FlaskForm class
-    symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=10)])
+    symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=5)])
     amount = FloatField('Amount', validators = [DataRequired()]) #Float field
     date_start = DateField('YY-MM-DD', format = '%Y-%m-%d', validators = [DataRequired()]) #Date field
 
