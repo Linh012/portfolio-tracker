@@ -17,11 +17,14 @@ def bubblesort_date(inv, j):  # Recursive bubble sorting
     if j == 1:
         return
     else:
+        swapped = False
         for i in range(j-1): # Traverse the list
             # Swap elements if one is bigger than other
             if inv[i + 1].date_start < inv[i].date_start:
                 inv[i], inv[i + 1] = inv[i + 1], inv[i]
-    bubblesort_date(inv,j-1)
+                swapped = True
+        if swapped == True:
+            bubblesort_date(inv,j-1)
     return inv
 
 # Create price chart of ticker symbol
