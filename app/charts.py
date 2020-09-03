@@ -95,7 +95,7 @@ def create_numberofinvestmentschart(inv):
 
     return p
 
-# Create 30 day porfolio value chart
+# Create 30 day portfolio value chart
 def create_portfoliovalue(inv, data):
     inv, lstdate, y = bubblesort_date(inv, len(inv)), [], [0] * 30
 
