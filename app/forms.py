@@ -8,7 +8,7 @@ class LoginForm(FlaskForm): #Login fields, inherits from FlaskForm class
     email = StringField('Email', validators=[
                         DataRequired(), Length(max=255), Email(message=('Invalid Email Address.'))]) #Email field, max length 255 characters
     password = PasswordField('Password', validators=[
-                             DataRequired(), Length(max=80)]) #Passworld field, max length 80 characters
+                             DataRequired(), Length(max=80)]) #Password field, max length 80 characters
     remember_me = BooleanField('Remember Me') #Boolean field, saves cookie on user's computer
     recaptcha = RecaptchaField() #Google's recaptcha v2 human verification service
     submit = SubmitField('Login') #Submit field
@@ -18,7 +18,7 @@ class SignupForm(FlaskForm): #Registration fields, inherits from FlaskForm class
     email = StringField('Email', validators=[
                         DataRequired(), Length(max=255), Email(message=('Invalid Email Address.'))]) #Email field, max length 255 characters
     password = PasswordField('Password', validators=[DataRequired(
-        message=('Please enter a password.')), Length(max=80)]) #Passworld field, max length 80 characters
+        message=('Please enter a password.')), Length(max=80)]) #Password field, max length 80 characters
     recaptcha = RecaptchaField() #Google's recaptcha v2 human verification service
 
 class TickerForm(FlaskForm): #Research page fields, inherits from FlaskForm
@@ -41,7 +41,7 @@ class EditForm(FlaskForm): #Edit date_end of an investment in database
 #Settings page fields
 class ChangePasswordForm(FlaskForm):
     cpassword = PasswordField('Password', validators=[DataRequired(
-        message=('Please enter a password.')), Length(max=80)]) #Passworld field, max length 80 characters
+        message=('Please enter a password.')), Length(max=80)]) #Password field, max length 80 characters
 
 class ChangeEmailForm(FlaskForm):
     cemail = StringField('Email', validators=[
