@@ -13,7 +13,7 @@ def load_user(uid):
     return User.query.filter(User.id == int(uid)).first()
 
 # Home page/Index
-@app.route('/')  # Function decorater - url
+@app.route('/')  # Function decorator - url
 @app.route('/index/')
 def index():
     return render_template("index.html", title="Home Page")
@@ -68,7 +68,7 @@ def register():
 
 #Dashboard page
 @app.route('/dashboard/', methods=['GET', 'POST'])
-@login_required  # Function decorater - requires login/user session else redirects to login page
+@login_required  # Function decorator - requires login/user session else redirects to login page
 def dashboard():
     i, d, e = InvestmentForm(), DeleteForm(), EditForm()
     if i.validate_on_submit(): # If new investment submitted
@@ -215,7 +215,7 @@ def settings():
         try:
             if check_password_hash(existing_user.passwordhashed, pform.cpassword.data):
                 flash("New password must be different from the old password.")
-            else:        
+            else:
                 existing_user.passwordhashed = generate_password_hash(
                     pform.cpassword.data, method='sha256')
                 db.session.commit() #Set new email and commit changes to database
