@@ -3,7 +3,7 @@ import pandas as pd # For manipulation of data frames (2 dimensional data struct
 from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import HoverTool
-from bokeh.palettes import Category20c
+from bokeh.palettes import Category20c, Blues8
 from bokeh.transform import cumsum
 from math import pi # Pie chart calculations
 from datetime import date  # For manipulating date object
@@ -63,8 +63,8 @@ def create_piechart(inv):
     # Add color to sectors of pie chart
     try:
         data['color'] = Category20c[len(inv_dict)]
-    except KeyError: # If no sectors, pass
-        pass
+    except KeyError:
+        data['color'] =  Blues8[len(inv_dict)]
 
     # Add plot, title, tools, hover feature and x range
     p = figure(plot_height=350, title="Portfolio Diversity",
@@ -82,7 +82,7 @@ def create_piechart(inv):
 
 # Create number of investments chart
 def create_numberofinvestmentschart(inv):
-    inv, invdates, y = bubblesort_date(inv, len(inv)), [], []
+    inv, invdates, y = bubblesort_date(inv, len(inv)) or inv, [], []
     for x in inv: #Add dates to x-axis
         invdates.append(x.date_start)
     for _ in range(1, len(invdates) + 1): #Add values to y-axis
@@ -97,19 +97,18 @@ def create_numberofinvestmentschart(inv):
 
 # Create 30 day portfolio value chart
 def create_portfoliovalue(inv, data):
-    inv, lstdate, y = bubblesort_date(inv, len(inv)), [], [0] * 30
+    inv, lstdate, y = bubblesort_date(inv, len(inv)) or inv, [], [0] * 30
+
 
     for _ in range(30): # Loop 30 times for 30 days
         lstdate.append(data[inv[0].symbol].index[-30 + _]) # Add date to list of dates
         for x in inv: # Nested loop - for every investment during that date
             if x.date_start <= lstdate[_]: # Investment must be active
-                tickerSymbol = x.symbol
-                cprice = data[tickerSymbol]['Close'] # Get close prices of ticker symbol
-
+                cprice = data[x.symbol]['Close'] # Get close prices of ticker symbol
                 # Calculate investment value
-                originalprice = float(cprice[cprice.index[0]])
-                newprice = float(cprice[cprice.index[1]]) or float(
-                    cprice[cprice.index[2]])
+                originalprice = float(cprice[cprice.index[-31 + _]])
+                newprice = float(cprice[cprice.index[-30 + _]]) or float(
+                    cprice[cprice.index[-29 + _]])
                 change = ((newprice - originalprice) / originalprice) + 1
                 # Add to list which will result in accurate portfolio value that takes in account changes in values of investments
                 y[_] += x.amount * change
