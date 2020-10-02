@@ -83,9 +83,9 @@
       <td>{{ x.amount }}</td>
       <td>{{ x.date_start }}</td>
       <td>{{ x.date_end }}</td>
-      <td>{{ profit[oloop.index-1] }}</td>
-      <td>{{ (profit[oloop.index-1]/100)*x.amount}}</td>
-      <td>{{ (profit[oloop.index-1]/100+1)*x.amount }}</td>
+      <td>{{ "%.2f"|format(profit[x]*100) }}</td>
+      <td>{{ "%.2f"|format((profit[x])*x.amount) }}</td>
+      <td>{{ "%.2f"|format((profit[x]+1)*x.amount) }}</td>
     </tr>
     {% endfor %}
   </table>
