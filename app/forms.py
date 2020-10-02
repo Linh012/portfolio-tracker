@@ -23,11 +23,11 @@ class SignupForm(FlaskForm): #Registration fields, inherits from FlaskForm class
 
 class TickerForm(FlaskForm): #Research page fields, inherits from FlaskForm
     t_symbol = StringField('Ticker Symbol', validators=[
-                        DataRequired(), Length(max=5)]) #String field, max length 5 characters
+                        DataRequired(), Length(max=6)]) #String field, max length 5 characters
 
 #Dashboard page fields
 class InvestmentForm(FlaskForm): #Add investment to database. inherits from FlaskForm class
-    symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=5)])
+    symbol = StringField('Ticker Symbol', validators = [DataRequired(), Length(max=6)])
     amount = FloatField('Amount', validators = [DataRequired()]) #Float field
     date_start = DateField('YY-MM-DD', format = '%Y-%m-%d', validators = [DataRequired()]) #Date field
 

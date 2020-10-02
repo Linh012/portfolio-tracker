@@ -33,7 +33,7 @@ class User(UserMixin, db.Model): #inherits from UserMixin and Model class (base 
 
 class Investment(db.Model): #inherits from Model class
     id = db.Column(db.Integer, primary_key=True) #primary key id
-    symbol = db.Column(db.String(5), nullable=False) #ticker symbol, max length 5 characters, cannot be null
+    symbol = db.Column(db.String(6), nullable=False) #ticker symbol, max length 6 characters, cannot be null
     amount = db.Column(db.Float, nullable=False) #amount, cannot be null
     date_start = db.Column(db.Date, nullable=False) #start date, cannot be null
     date_end = db.Column(db.Date, nullable=True) #end date, can be null (investment active)
