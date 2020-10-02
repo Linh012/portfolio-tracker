@@ -90,6 +90,7 @@ def dashboard():
                 flash("No data found, symbol may have been delisted!")
         else: # If date in future, flash error message
             flash("Must not be a future date!")
+
     if d.validate_on_submit(): #If delete investment form submitted
         try:
             inv_id = d.d_id.data # Get id data from form
@@ -115,41 +116,46 @@ def dashboard():
     # Query database for all investments
     inv = Investment.query.filter_by(user_id=current_user.id).all()
 
-    #Profit calculation of every investment
-    profit = []
-    for x in inv: # For every investment
-        tickerSymbol = x.symbol
-        tickerData = yf.Ticker(tickerSymbol) # Web scrape Yahoo! Finance
-        if x.date_end != None: # If investment is not active, limit unwanted data
-            tickerDf = tickerData.history(start=x.date_start, end=x.date_end) # Data frame of ticker data
+    if inv:
+        #Profit calculation of every investment
+        profit = {}
+        for x in inv: # For every investment
+            tickerSymbol = x.symbol
+            tickerData = yf.Ticker(tickerSymbol) # Web scrape Yahoo! Finance
+            if x.date_end: # If investment is not active, limit unwanted data
+                tickerDf = tickerData.history(start=x.date_start, end=x.date_end) # Data frame of ticker data
+            else:
+                tickerDf = tickerData.history(start=x.date_start)
+            profit[x] = ((tickerDf['Close'][tickerDf['Close'].index[-1]] / tickerDf['Close'][tickerDf['Close'].index[0]])-1)
+
+
+        unique = [] #List of unique ticker symbols
+        if len(inv)>1:
+            for a in bubblesort_date(inv, len(inv)):
+                if a.symbol not in unique: # If ticker symbol is unique, append to list
+                    unique.append(a.symbol)
         else:
-            tickerDf = tickerData.history(start=x.date_start)
-        cprice = tickerDf['Close'] # Get close prices
-        #Get price when investment initially was made and current price
-        price1 = float(cprice[cprice.index[0]])
-        price2 = float(cprice[cprice.index[-1]])
-        percent = ((price2 - price1) / price1) * 100 # Calculate percentage change
-        profit.append(percent) # Add to percent list
+            unique.append(inv[0].symbol)
 
-    lst = [] #List of unique ticker symbols
-    for a in bubblesort_date(inv, len(inv)):
-        if a.symbol not in lst: # If ticker symbol is unique, append to list
-            lst.append(a.symbol)
+        # Get data for multiple tickers at once and threads for faster completion
+        data = yf.download("RBI.VI "+" ".join(unique), start=inv[0].date_start, end=date.today(),
+                           group_by="ticker", threads=len(unique)//10)
 
-    # Get data for multiple tickers at once and threads for faster completion
-    data = yf.download(" ".join(lst), start=inv[0].date_start, end=date.today(),
-                       group_by="ticker")
+        #Graph generation
+        scriptpie, divpie = components(create_piechart(inv)) # Create pie chart
+        scriptnum, divnum = components(create_numberofinvestmentschart(inv)) # Create number of invesments chart
+        scriptval, divval = components(create_portfoliovalue(inv, data)) # Create portfolio value chart
+        scriptbar, divbar = components(create_barchart(inv, data)) # Create performance bar chart
 
-    #Graph generation
-    scriptpie, divpie = components(create_piechart(inv)) # Create pie chart
-    scriptnum, divnum = components(create_numberofinvestmentschart(inv)) # Create number of invesments chart
-    scriptval, divval = components(create_portfoliovalue(inv, data)) # Create portfolio value chart
-    scriptbar, divbar = components(create_barchart(inv, data)) # Create performance bar chart
+    else:
+        profit=None
+        scriptpie = divpie = scriptnum = divnum = scriptval = divval = scriptbar = divbar= ""
 
-    # Render page
+        # Render page
     return render_template("dashboard.html", title="Dashboard", form=i, form2=d,
-    form3=e, inv=inv, profit=profit, scriptpie=scriptpie, divpie=divpie, scriptnum=scriptnum,
-    divnum=divnum, scriptval=scriptval, divval=divval, scriptbar=scriptbar, divbar=divbar)
+        form3=e, inv=inv, profit=profit, scriptpie=scriptpie, divpie=divpie, scriptnum=scriptnum,
+        divnum=divnum, scriptval=scriptval, divval=divval, scriptbar=scriptbar, divbar=divbar)
+
 
 # Research page
 @app.route('/research/', methods=['GET', 'POST'])
