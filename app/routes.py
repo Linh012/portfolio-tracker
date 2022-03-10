@@ -14,13 +14,13 @@ def load_user(uid):
 
 # Home page/Index
 @app.route('/')  # Function decorator - url
-@app.route('/index/')
+@app.route('/index')
 def index():
     return render_template("index.html", title="Home Page")
 
 # Login page
 # Accepts both GET and POST methods
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:  # If already logged in, redirect to dashboard
         return redirect(url_for("dashboard"))
@@ -44,7 +44,7 @@ def login():
     return render_template("login.html", title="Login Page", form=f)
 
 # Sign up page
-@app.route('/register/', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     s = SignupForm()
     if s.validate_on_submit():  # If sign up form valid and recaptcha passed
@@ -67,7 +67,7 @@ def register():
     return render_template("register.html", title="Registration Page", form=s)
 
 #Dashboard page
-@app.route('/dashboard/', methods=['GET', 'POST'])
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required  # Function decorator - requires login/user session else redirects to login page
 def dashboard():
     i, d, e = InvestmentForm(), DeleteForm(), EditForm()
@@ -158,7 +158,7 @@ def dashboard():
 
 
 # Research page
-@app.route('/research/', methods=['GET', 'POST'])
+@app.route('/research', methods=['GET', 'POST'])
 def research():
     t = TickerForm()
     script, div, info, tickerSymbol = "No chart data", "", "", "None"
@@ -178,7 +178,7 @@ def research():
     script=script, div=div, info=info, symbol=tickerSymbol)
 
 #Logout page
-@app.route('/logout/')
+@app.route('/logout')
 @login_required  # Needs to be logged in before you can be logged out
 def logout():
     logout_user()  # Any cookies of user/login session will be cleaned up
@@ -195,12 +195,12 @@ def internal_server_error(error): # Render error page
     return render_template("error.html", url=request.path, statuscode='500')
 
 # About page
-@app.route('/about/')
+@app.route('/about')
 def about():
     return render_template("about.html", title="About")
 
 # Settings page
-@app.route('/settings/', methods=['GET', 'POST'])
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required # Requires to be logged in
 def settings():
     pform, eform = ChangePasswordForm(), ChangeEmailForm()
